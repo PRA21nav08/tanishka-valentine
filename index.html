@@ -1,111 +1,257 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<title>Tanishka ❤️ Valentine</title>
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<style>
-body {
-  margin:0;
-  height:100vh;
-  background: linear-gradient(135deg,#ff758c,#ff7eb3);
-  display:flex;
-  align-items:center;
-  justify-content:center;
-  font-family:Arial,sans-serif;
-  overflow:hidden;
-}
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>For Tanishka | Forever</title>
+    <link href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@700&family=Quicksand:wght@300;500&display=swap" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+    <style>
+        :root {
+            --rose: #ff4d6d;
+            --gold: #d4af37;
+            --glass: rgba(255, 255, 255, 0.85);
+        }
 
-.card {
-  background:white;
-  padding:25px;
-  border-radius:20px;
-  text-align:center;
-  max-width:360px;
-  width:90%;
-  box-shadow:0 20px 40px rgba(0,0,0,0.35);
-}
+        body, html {
+            margin: 0;
+            padding: 0;
+            width: 100%;
+            height: 100%;
+            overflow: hidden;
+            font-family: 'Quicksand', sans-serif;
+            background: #fff5f7;
+        }
 
-h1 { color:#ff4d6d; }
-button { padding:12px 22px; border:none; border-radius:30px; font-size:16px; cursor:pointer; margin:10px; transition:transform 0.4s; }
-#yesBtn { background:#ff4d6d;color:white; }
-#noBtn { background:#ccc; }
+        /* Animated Gradient Background */
+        .bg-gradient {
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: linear-gradient(45deg, #ff9a9e 0%, #fad0c4 99%, #fad0c4 100%);
+            z-index: -2;
+            opacity: 0.4;
+        }
 
-.heart { position:fixed; bottom:0; font-size:24px; animation:floatUp linear forwards; }
-@keyframes floatUp { to { transform:translateY(-100vh); opacity:0; } }
+        canvas#heartCanvas {
+            position: fixed;
+            top: 0; left: 0;
+            z-index: -1;
+            pointer-events: none;
+        }
 
-.memory-photo { width:100%; border-radius:16px; margin-top:15px; opacity:0; animation:fadeIn 2s forwards; }
-@keyframes fadeIn { to { opacity:1; } }
+        .container {
+            height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            perspective: 1000px;
+        }
 
-.from { margin-top:15px; font-size:1.1em; }
-.screenshot { font-size:0.9em; opacity:0.6; }
-</style>
+        .card {
+            background: var(--glass);
+            backdrop-filter: blur(15px);
+            -webkit-backdrop-filter: blur(15px);
+            padding: 50px 30px;
+            border-radius: 30px;
+            text-align: center;
+            max-width: 420px;
+            width: 85%;
+            box-shadow: 0 25px 50px rgba(255, 77, 109, 0.15);
+            border: 1px solid rgba(255, 255, 255, 0.6);
+            transform-style: preserve-3d;
+            animation: cardEntrance 1.2s cubic-bezier(0.23, 1, 0.32, 1);
+        }
+
+        @keyframes cardEntrance {
+            from { opacity: 0; transform: translateY(50px) rotateX(-10deg); }
+            to { opacity: 1; transform: translateY(0) rotateX(0); }
+        }
+
+        h1 {
+            font-family: 'Dancing Script', cursive;
+            color: var(--rose);
+            font-size: 2.8rem;
+            margin-bottom: 10px;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.05);
+        }
+
+        p {
+            color: #666;
+            font-size: 1.1rem;
+            margin-bottom: 30px;
+            letter-spacing: 0.5px;
+        }
+
+        .btn-wrapper {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 20px;
+            min-height: 60px;
+        }
+
+        button {
+            padding: 15px 35px;
+            border: none;
+            border-radius: 50px;
+            font-size: 1rem;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            position: relative;
+        }
+
+        #yesBtn {
+            background: var(--rose);
+            color: white;
+            box-shadow: 0 10px 20px rgba(255, 77, 109, 0.3);
+        }
+
+        #yesBtn:hover {
+            transform: scale(1.1) translateY(-3px);
+            box-shadow: 0 15px 25px rgba(255, 77, 109, 0.4);
+        }
+
+        #noBtn {
+            background: white;
+            color: #999;
+            border: 1px solid #eee;
+        }
+
+        .painting-frame {
+            display: none;
+            margin: 20px auto;
+            border: 8px solid white;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.15);
+            border-radius: 10px;
+            max-width: 100%;
+            animation: fadeIn 2s ease;
+        }
+
+        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+
+        .signature {
+            margin-top: 20px;
+            font-family: 'Dancing Script', cursive;
+            font-size: 1.4rem;
+            color: var(--rose);
+            opacity: 0;
+        }
+
+        .active-sig { animation: fadeIn 2s forwards 1s; }
+    </style>
 </head>
-
 <body>
 
-<div class="card" id="card">
-<h1 id="question">Tanishka 💖<br>Will you be my Valentine?</h1>
-<button id="yesBtn" onclick="yesClicked()">Yes 💘</button>
-<button id="noBtn" onclick="noClicked()">No 😢</button>
-</div>
+    <div class="bg-gradient"></div>
+    <canvas id="heartCanvas"></canvas>
 
-<audio id="suspenseMusic" src="suspense.mp3" autoplay loop></audio>
-<audio id="loveMusic" src="love.mp3"></audio>
-<audio id="heartbeat" src="heartbeat.mp3"></audio>
+    <div class="container">
+        <div class="card" id="mainCard">
+            <div id="content">
+                <h1>Hi Tanishka...</h1>
+                <p>I’ve been wanting to ask you something special.</p>
+                <div class="btn-wrapper">
+                    <button id="yesBtn">Yes, Forever 💍</button>
+                    <button id="noBtn">No</button>
+                </div>
+            </div>
+        </div>
+    </div>
 
-<script>
-let noCount=0;
-let yesBtn=document.getElementById("yesBtn");
+    <audio id="loveMusic" src="love.mp3" loop></audio>
 
-function yesClicked(){
-  document.getElementById("suspenseMusic").pause();
-  document.getElementById("heartbeat").pause();
-  document.getElementById("loveMusic").play();
+    <script>
+        const canvas = document.getElementById('heartCanvas');
+        const ctx = canvas.getContext('2d');
+        const yesBtn = document.getElementById('yesBtn');
+        const noBtn = document.getElementById('noBtn');
+        const card = document.getElementById('mainCard');
+        
+        let hearts = [];
 
-  document.getElementById("card").innerHTML=`
-    <h1>She said YES 💘</h1>
-    <p>Tanishka,<br>this moment means everything to me 🥹❤️</p>
-    <img src="our_painting.jpg" class="memory-photo">
-    <p>We painted this together…<br>and unknowingly painted a memory for life ✨</p>
-    <h2>Happy Valentine’s Day 🌹</h2>
-    <div class="from">Forever yours — Pranav ❤️</div>
-    <p class="screenshot">📸 Screenshot this moment</p>
-  `;
+        // Resize Canvas
+        function resize() {
+            canvas.width = window.innerWidth;
+            canvas.height = window.innerHeight;
+        }
+        window.addEventListener('resize', resize);
+        resize();
 
-  for(let i=0;i<40;i++){
-    let heart=document.createElement("div");
-    heart.className="heart";
-    heart.innerHTML="❤️";
-    heart.style.left=Math.random()*100+"vw";
-    heart.style.animationDuration=(Math.random()*3+2)+"s";
-    document.body.appendChild(heart);
-  }
-}
+        // Heart Object for Background
+        class Heart {
+            constructor() {
+                this.reset();
+            }
+            reset() {
+                this.x = Math.random() * canvas.width;
+                this.y = canvas.height + 20;
+                this.size = Math.random() * 15 + 10;
+                this.speed = Math.random() * 1.5 + 0.5;
+                this.opacity = Math.random() * 0.5 + 0.2;
+            }
+            update() {
+                this.y -= this.speed;
+                if (this.y < -20) this.reset();
+            }
+            draw() {
+                ctx.fillStyle = `rgba(255, 77, 109, ${this.opacity})`;
+                ctx.font = `${this.size}px Arial`;
+                ctx.fillText("❤️", this.x, this.y);
+            }
+        }
 
-// NO button logic
-function noClicked(){
-  noCount++;
-  document.getElementById("heartbeat").play();
+        for (let i = 0; i < 25; i++) hearts.push(new Heart());
 
-  if(noCount<=2){
-    document.getElementById("question").innerHTML=`
-      Are you sure? 🥺<br>
-      <img src="https://i.imgur.com/7yUvePI.png" width="120">
-    `;
-  } else {
-    let noBtn=document.getElementById("noBtn");
-    noBtn.style.position="absolute";
-    noBtn.style.left=Math.random()*80+"vw";
-    noBtn.style.top=Math.random()*80+"vh";
-  }
-}
+        function animate() {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            hearts.forEach(h => { h.update(); h.draw(); });
+            requestAnimationFrame(animate);
+        }
+        animate();
 
-// YES button grows slowly
-setInterval(()=>{
-  yesBtn.style.transform="scale("+(1+Math.sin(Date.now()/600)/20)+")";
-},50);
-</script>
+        // Premium Runaway Logic
+        noBtn.addEventListener('mouseover', () => {
+            const x = Math.random() * (window.innerWidth - 100);
+            const y = Math.random() * (window.innerHeight - 50);
+            noBtn.style.position = 'fixed';
+            noBtn.style.left = x + 'px';
+            noBtn.style.top = y + 'px';
+        });
 
+        yesBtn.addEventListener('click', () => {
+            document.getElementById('loveMusic').play().catch(() => {});
+            
+            // Elegant Multi-burst Confetti
+            const duration = 3 * 1000;
+            const end = Date.now() + duration;
+
+            (function frame() {
+                confetti({
+                    particleCount: 3,
+                    angle: 60,
+                    spread: 55,
+                    origin: { x: 0 },
+                    colors: ['#ff4d6d', '#ffffff']
+                });
+                confetti({
+                    particleCount: 3,
+                    angle: 120,
+                    spread: 55,
+                    origin: { x: 1 },
+                    colors: ['#ff4d6d', '#ffffff']
+                });
+
+                if (Date.now() < end) requestAnimationFrame(frame);
+            }());
+
+            card.innerHTML = `
+                <h1>It was always you.</h1>
+                <p>Tanishka, thank you for being my Valentine.</p>
+                <img src="our_painting.jpg" class="painting-frame" style="display:block;">
+                <div class="signature active-sig">Forever yours, Pranav</div>
+            `;
+        });
+    </script>
 </body>
 </html>
